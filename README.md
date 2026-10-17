@@ -3,7 +3,8 @@
 Platform terpadu untuk tim developer yang menggabungkan manajemen tugas sprint (**TaskFlow**), repositori kode & PR review (**CodeHub**), serta obrolan tim terorganisir (**TeamSync**) dalam satu workspace modern berbasis Next.js App Router & TypeScript.
 
 > [!NOTE]
-> Standar penamaan fitur, aturan bahasa, estetika desain, dan arsitektur produk selengkapnya terdokumentasi di file panduan resmi: **[ketetapan.md](file:///d:/WorkBranch/dev-hub/ketetapan.md)**.
+> - Panduan standar penamaan dan arsitektur fitur: **[ketetapan.md](file:///d:/WorkBranch/dev-hub/ketetapan.md)**.
+> - Panduan langkah instalasi dan cara menjalankan aplikasi: **[panduan_instalasi.md](file:///d:/WorkBranch/dev-hub/panduan_instalasi.md)**.
 
 ---
 
