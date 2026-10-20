@@ -16,10 +16,6 @@ import {
   ChevronDown,
   FolderGit2,
   Globe,
-  FolderKanban,
-  Bell,
-  Settings,
-  Search,
 } from 'lucide-react';
 import { ActiveView } from '@/types';
 
@@ -72,14 +68,6 @@ export default function Sidebar() {
       badge: 'Live',
       badgeColor: 'badge-success',
     },
-  ];
-
-  const routeItems = [
-    { label: 'Projects', path: '/projects', icon: FolderKanban },
-    { label: 'Notifications', path: '/notifications', icon: Bell },
-    { label: 'Members', path: '/members', icon: Users },
-    { label: 'Settings', path: '/settings', icon: Settings },
-    { label: 'Global Search', path: '/search', icon: Search },
   ];
 
   return (
@@ -283,51 +271,6 @@ export default function Sidebar() {
                     {item.badge}
                   </span>
                 )}
-              </button>
-            );
-          })}
-        </nav>
-
-        <div
-          style={{
-            fontSize: '0.7rem',
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            color: 'var(--text-light)',
-            padding: '24px 12px 8px',
-            letterSpacing: '0.8px',
-          }}
-        >
-          WorkBranch
-        </div>
-
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          {routeItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={item.path}
-                onClick={() => {
-                  setIsLandingPage(false);
-                  router.push(item.path);
-                }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  padding: '10px 14px',
-                  borderRadius: '10px',
-                  border: 'none',
-                  cursor: 'pointer',
-                  width: '100%',
-                  textAlign: 'left',
-                  background: 'transparent',
-                  color: 'var(--text-main)',
-                  fontWeight: 500,
-                }}
-              >
-                <Icon size={18} color="var(--text-muted)" />
-                <span style={{ fontSize: '0.875rem' }}>{item.label}</span>
               </button>
             );
           })}
