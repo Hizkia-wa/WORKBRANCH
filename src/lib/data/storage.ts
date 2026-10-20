@@ -6,22 +6,11 @@ import {
   initialMessages,
   initialTeams,
 } from '@/data/mockData';
-import { Activity, Channel, ChatMessage, ClickUpTask, GitHubTask, Project, Team, TeamMember, WorkspaceFile } from '@/types';
+import { Channel, ChatMessage, ClickUpTask, GitHubTask, Team, TeamMember } from '@/types';
 
 const STORAGE_VERSION = 'v2';
 const PREFIX = `workbranch:${STORAGE_VERSION}:`;
 const THEME_KEY = `${PREFIX}theme`;
-
-const seededProjects: Project[] = [
-  { id: 'project-duluinnovation', name: 'Duluinnovation 2026', description: 'Platform kolaborasi dan inovasi produk digital.', status: 'active', progress: 64, ownerId: 'm1', memberIds: ['m1', 'm2', 'm3', 'm4'], updatedAt: '2026-10-20' },
-  { id: 'project-bebras', name: 'Bebras Challenge 2026', description: 'Persiapan materi, publikasi, dan operasional challenge.', status: 'planning', progress: 28, ownerId: 'm2', memberIds: ['m1', 'm2', 'm3'], updatedAt: '2026-10-18' },
-];
-
-const seededFiles: WorkspaceFile[] = [
-  { id: 'file-roadmap', projectId: 'project-duluinnovation', name: 'Product Roadmap.docx', path: '/planning/Product Roadmap.docx', kind: 'docx', size: '2.4 MB', updatedAt: '2026-10-20', linkedTaskIds: ['cu-101'] },
-  { id: 'file-budget', projectId: 'project-duluinnovation', name: 'Sprint Budget.xlsx', path: '/planning/Sprint Budget.xlsx', kind: 'xlsx', size: '840 KB', updatedAt: '2026-10-19', linkedTaskIds: [] },
-  { id: 'file-deck', projectId: 'project-bebras', name: 'Challenge Brief.pptx', path: '/brief/Challenge Brief.pptx', kind: 'pptx', size: '5.1 MB', updatedAt: '2026-10-18', linkedTaskIds: [] },
-];
 
 const seeds = {
   teams: initialTeams,
@@ -30,9 +19,6 @@ const seeds = {
   channels: initialChannels,
   messages: initialMessages,
   members: initialMembers,
-  projects: seededProjects,
-  files: seededFiles,
-  activities: [] as Activity[],
 };
 
 function key(name: keyof typeof seeds): string {
@@ -105,16 +91,4 @@ export async function getChannels(): Promise<Channel[]> {
 
 export async function getMessages(): Promise<ChatMessage[]> {
   return readStored('messages', initialMessages);
-}
-
-export async function getProjects(): Promise<Project[]> {
-  return readStored('projects', seededProjects);
-}
-
-export async function getFiles(): Promise<WorkspaceFile[]> {
-  return readStored('files', seededFiles);
-}
-
-export async function getActivities(): Promise<Activity[]> {
-  return readStored('activities', []);
 }

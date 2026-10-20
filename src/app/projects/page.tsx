@@ -1,4 +1,3 @@
 import WorkspacePage from '@/components/layout/WorkspacePage';
-import ProjectsView from '@/components/views/ProjectsView';
-import { getProjects } from '@/lib/data/storage';
-export default async function ProjectsPage() { return <WorkspacePage><ProjectsView projects={await getProjects()} /></WorkspacePage>; }
+import WorkspaceModuleView from '@/components/views/WorkspaceModuleView';
+export default function ProjectsPage() { return <WorkspacePage><WorkspaceModuleView module="projects" /></WorkspacePage>; }

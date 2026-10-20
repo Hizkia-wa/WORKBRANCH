@@ -335,48 +335,6 @@ button, input, select, textarea {
     transform: translateY(20px);
     opacity: 0;
   }
-
-  .project-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-  .project-card { display: block; color: inherit; }
-  .project-card:hover { transform: translateY(-3px); }
-  .project-card-top, .project-card-meta, .task-card-status, .detail-meta, .project-tabs, .task-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  .project-card h2 { color: var(--text-heading); font-size: 1.1rem; margin: 18px 0 8px; }
-  .project-card p { color: var(--text-muted); min-height: 48px; }
-  .project-card-meta { color: var(--text-muted); font-size: .8rem; margin-top: 12px; }
-  .project-card-meta span:last-child { display: inline-flex; align-items: center; gap: 5px; }
-  .progress-track { height: 8px; background: var(--primary-light); border-radius: 99px; overflow: hidden; margin-top: 18px; }
-  .progress-track span { display: block; height: 100%; background: var(--primary-gradient); border-radius: inherit; }
-  .progress-track.large { height: 12px; }
-  .project-overview-hero { display: grid; grid-template-columns: 180px 1fr; align-items: center; gap: 24px; margin-bottom: 20px; }
-  .metric-label, .project-card small, .task-card small { color: var(--text-muted); font-size: .78rem; display: block; }
-  .project-progress-value { display: block; color: var(--text-heading); font-size: 2.2rem; margin-top: 4px; }
-  .overview-stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
-  .overview-stat { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px 12px; }
-  .overview-stat svg:first-child { color: var(--primary); grid-row: span 2; }
-  .overview-stat strong { color: var(--text-heading); }
-  .overview-stat span { color: var(--text-muted); font-size: .78rem; }
-  .project-tabs { justify-content: flex-start; flex-wrap: wrap; margin-top: 16px; }
-  .project-tabs a { color: var(--primary); font-size: .88rem; font-weight: 600; padding: 8px 12px; border-radius: var(--radius-sm); background: var(--primary-light); }
-  .task-toolbar { justify-content: flex-start; margin-bottom: 16px; }
-  .task-board { display: grid; grid-template-columns: repeat(4, minmax(190px, 1fr)); gap: 16px; align-items: start; }
-  .task-column { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 14px; min-height: 220px; }
-  .task-column h2 { text-transform: capitalize; color: var(--text-heading); font-size: .9rem; margin-bottom: 12px; }
-  .task-card { display: flex; flex-direction: column; gap: 8px; padding: 14px; margin-bottom: 10px; background: var(--bg-app); border-radius: var(--radius-sm); border: 1px solid var(--border-light); }
-  .task-card:hover { border-color: var(--primary); }
-  .task-card strong { color: var(--text-heading); font-size: .88rem; }
-  .task-card span { color: var(--text-muted); font-size: .78rem; }
-  .task-card-status { justify-content: flex-start; color: var(--primary); font-size: .72rem; text-transform: capitalize; }
-  .detail-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(260px, .6fr); gap: 20px; }
-  .detail-main h2, .detail-grid aside h2 { color: var(--text-heading); font-size: 1rem; margin-bottom: 18px; }
-  .detail-main h3 { display: flex; align-items: center; justify-content: space-between; color: var(--text-heading); font-size: .95rem; margin: 28px 0 12px; }
-  .detail-meta { justify-content: flex-start; flex-wrap: wrap; color: var(--text-muted); font-size: .82rem; }
-  .detail-meta span { display: inline-flex; align-items: center; gap: 6px; }
-  .linked-file { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid var(--border-light); border-radius: var(--radius-sm); margin-top: 8px; }
-  .linked-file span { color: var(--text-heading); flex: 1; font-size: .88rem; }
-  .linked-file small, .muted { color: var(--text-muted); }
-  .activity-item { display: flex; gap: 10px; color: var(--text-muted); font-size: .84rem; padding: 12px 0; border-bottom: 1px solid var(--divider); }
-  @media (max-width: 900px) { .overview-stat-grid { grid-template-columns: repeat(2, 1fr); } .task-board { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 600px) { .project-grid, .project-overview-hero, .detail-grid { grid-template-columns: 1fr; } .overview-stat-grid, .task-board { grid-template-columns: 1fr; } }
   to {
     transform: translateY(0);
     opacity: 1;
