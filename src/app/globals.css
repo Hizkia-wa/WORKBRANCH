@@ -454,15 +454,3 @@ button, input, select, textarea {
   resize: vertical;
   min-height: 85px;
 }
-
-.repository-toolbar, .file-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; color: var(--text-muted); font-size: .85rem; }
-.file-list { background: var(--bg-card); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-light); }
-.file-row { display: grid; grid-template-columns: 28px minmax(0, 1fr) 70px 80px 20px; align-items: center; gap: 12px; padding: 15px 18px; border-bottom: 1px solid var(--divider); color: var(--text-muted); font-size: .78rem; }
-.file-row:last-child { border-bottom: 0; }
-.file-row:hover { background: var(--bg-card-hover); }
-.file-icon { color: var(--primary); }
-.file-name { min-width: 0; }
-.file-name strong { display: block; color: var(--text-heading); font-size: .88rem; }
-.file-name small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.file-preview { min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--text-muted); }
-@media (max-width: 600px) { .file-row { grid-template-columns: 28px minmax(0, 1fr) 20px; } .file-row > span:not(.file-name) { display: none; } .file-actions { flex-wrap: wrap; justify-content: flex-start; } }
