@@ -17,6 +17,10 @@ import {
   GitBranch,
   MessageSquare,
   Layers,
+  GitCommit,
+  Kanban,
+  Code2,
+  Zap,
 } from 'lucide-react';
 
 export default function DashboardView() {
@@ -58,16 +62,29 @@ export default function DashboardView() {
           }}
         >
           <div>
-            <h3
-              style={{
-                fontSize: '1.15rem',
-                fontWeight: 700,
-                color: 'var(--text-heading)',
-                marginBottom: '4px',
-              }}
-            >
-              Selamat John! 🎉
-            </h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <h3
+                style={{
+                  fontSize: '1.2rem',
+                  fontWeight: 800,
+                  color: 'var(--text-heading)',
+                }}
+              >
+                Selamat John!
+              </h3>
+              <span
+                className="badge badge-purple"
+                style={{
+                  fontSize: '0.7rem',
+                  padding: '3px 8px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+              >
+                <Sparkles size={12} /> Top Dev
+              </span>
+            </div>
             <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
               Kontributor terbaik sprint bulan ini di {currentTeam.name}
             </p>
@@ -83,31 +100,68 @@ export default function DashboardView() {
               >
                 92.4%
               </div>
-              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
-                Target sprint tercapai 🚀
+              <div
+                style={{
+                  fontSize: '0.8125rem',
+                  color: 'var(--text-muted)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                }}
+              >
+                <span>Target sprint tercapai</span>
+                <span
+                  style={{
+                    color: 'var(--success)',
+                    fontWeight: 700,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '2px',
+                  }}
+                >
+                  <TrendingUp size={14} /> +12.8%
+                </span>
               </div>
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
             <button
               onClick={() => setActiveView('clickup')}
               className="btn btn-primary btn-sm"
-              style={{ borderRadius: '8px', padding: '8px 16px' }}
+              style={{ borderRadius: '8px', padding: '8px 18px', fontWeight: 600 }}
             >
               Buka Papan TaskFlow
             </button>
 
-            {/* Graphic Piala */}
+            {/* Official Vector Trophy Badge (Tailwind/Lucide Standard) */}
             <div
               style={{
-                fontSize: '4.5rem',
-                lineHeight: 1,
-                filter: 'drop-shadow(0 8px 12px rgba(255, 180, 0, 0.3))',
-                transform: 'translateY(-8px)',
+                width: '84px',
+                height: '84px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(255, 180, 0, 0.24) 0%, rgba(255, 180, 0, 0.04) 70%, transparent 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
               }}
             >
-              🏆
+              <div
+                style={{
+                  width: '62px',
+                  height: '62px',
+                  borderRadius: '16px',
+                  background: 'linear-gradient(135deg, #ffb400 0%, #f59e0b 100%)',
+                  color: '#ffffff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 8px 22px rgba(245, 158, 11, 0.42)',
+                }}
+              >
+                <Trophy size={34} strokeWidth={2.2} />
+              </div>
             </div>
           </div>
         </div>
@@ -133,9 +187,12 @@ export default function DashboardView() {
               <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-heading)' }}>
                 Ringkasan Sprint & Aktivitas Tim
               </h3>
-              <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
-                Peningkatan performa 48.5% 😎 lintas TaskFlow dan CodeHub
-              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8125rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                <span style={{ color: 'var(--success)', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                  <TrendingUp size={14} /> +48.5%
+                </span>
+                <span>lintas TaskFlow dan CodeHub</span>
+              </div>
             </div>
             <button className="btn-icon">
               <MoreVertical size={18} />
@@ -378,8 +435,11 @@ export default function DashboardView() {
               <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-heading)' }}>
                 45%
               </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                Lebih cepat dari minggu kemarin 😎
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span>Lebih cepat dari minggu kemarin</span>
+                <span style={{ color: 'var(--success)', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
+                  <TrendingUp size={13} /> +15%
+                </span>
               </div>
             </div>
             <button
@@ -443,18 +503,17 @@ export default function DashboardView() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div
                   style={{
-                    width: '34px',
-                    height: '34px',
-                    borderRadius: '8px',
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '9px',
                     background: '#e0f2fe',
                     color: '#0284c7',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontWeight: 700,
                   }}
                 >
-                  ▲
+                  <Kanban size={18} strokeWidth={2.2} />
                 </div>
                 <div>
                   <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-heading)' }}>
@@ -485,18 +544,17 @@ export default function DashboardView() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div
                   style={{
-                    width: '34px',
-                    height: '34px',
-                    borderRadius: '8px',
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '9px',
                     background: '#fef3c7',
                     color: '#d97706',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontWeight: 700,
                   }}
                 >
-                  ⚡
+                  <GitBranch size={18} strokeWidth={2.2} />
                 </div>
                 <div>
                   <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-heading)' }}>
@@ -527,18 +585,17 @@ export default function DashboardView() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div
                   style={{
-                    width: '34px',
-                    height: '34px',
-                    borderRadius: '8px',
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '9px',
                     background: '#ede9fe',
                     color: '#7c3aed',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontWeight: 700,
                   }}
                 >
-                  💬
+                  <MessageSquare size={18} strokeWidth={2.2} />
                 </div>
                 <div>
                   <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-heading)' }}>
@@ -565,7 +622,26 @@ export default function DashboardView() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           {/* Kartu: Total Tugas Selesai */}
           <div className="materio-card" style={{ padding: '18px' }}>
-            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-heading)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '8px',
+                  background: 'var(--primary-light)',
+                  color: 'var(--primary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <CheckCircle2 size={16} strokeWidth={2.2} />
+              </div>
+              <button className="btn-icon" style={{ width: '24px', height: '24px' }}>
+                <MoreVertical size={14} />
+              </button>
+            </div>
+            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-heading)', marginTop: '8px' }}>
               {completedClickUp} / {totalClickUp}
             </div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
@@ -593,7 +669,7 @@ export default function DashboardView() {
                 style={{
                   width: '32px',
                   height: '32px',
-                  borderRadius: '6px',
+                  borderRadius: '8px',
                   background: 'var(--success-light)',
                   color: 'var(--success)',
                   display: 'flex',
@@ -601,7 +677,7 @@ export default function DashboardView() {
                   justifyContent: 'center',
                 }}
               >
-                <GitPullRequest size={16} />
+                <GitPullRequest size={16} strokeWidth={2.2} />
               </div>
               <button className="btn-icon" style={{ width: '24px', height: '24px' }}>
                 <MoreVertical size={14} />
@@ -620,19 +696,24 @@ export default function DashboardView() {
 
           {/* Kartu: Story Points */}
           <div className="materio-card" style={{ padding: '18px' }}>
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '6px',
-                background: 'var(--primary-light)',
-                color: 'var(--primary)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Layers size={16} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '8px',
+                  background: 'var(--primary-light)',
+                  color: 'var(--primary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Layers size={16} strokeWidth={2.2} />
+              </div>
+              <button className="btn-icon" style={{ width: '24px', height: '24px' }}>
+                <MoreVertical size={14} />
+              </button>
             </div>
             <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-heading)', marginTop: '8px' }}>
               {currentTeam.members.length * 4}
@@ -647,7 +728,26 @@ export default function DashboardView() {
 
           {/* Kartu: Commits count */}
           <div className="materio-card" style={{ padding: '18px' }}>
-            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-heading)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '8px',
+                  background: 'rgba(255, 180, 0, 0.12)',
+                  color: '#ffb400',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <GitCommit size={16} strokeWidth={2.2} />
+              </div>
+              <button className="btn-icon" style={{ width: '24px', height: '24px' }}>
+                <MoreVertical size={14} />
+              </button>
+            </div>
+            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-heading)', marginTop: '8px' }}>
               1,240
             </div>
             <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
