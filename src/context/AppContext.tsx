@@ -77,24 +77,29 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Load from localStorage if present
   useEffect(() => {
-    try {
-      const savedTeams = localStorage.getItem('materio_teams');
-      if (savedTeams) setTeams(JSON.parse(savedTeams));
+    const loadSavedState = () => {
+      try {
+        const savedTeams = localStorage.getItem('materio_teams');
+        if (savedTeams) setTeams(JSON.parse(savedTeams));
 
-      const savedCUTasks = localStorage.getItem('materio_cu_tasks');
-      if (savedCUTasks) setClickUpTasks(JSON.parse(savedCUTasks));
+        const savedCUTasks = localStorage.getItem('materio_cu_tasks');
+        if (savedCUTasks) setClickUpTasks(JSON.parse(savedCUTasks));
 
-      const savedGHTasks = localStorage.getItem('materio_gh_tasks');
-      if (savedGHTasks) setGitHubTasks(JSON.parse(savedGHTasks));
+        const savedGHTasks = localStorage.getItem('materio_gh_tasks');
+        if (savedGHTasks) setGitHubTasks(JSON.parse(savedGHTasks));
 
-      const savedTheme = localStorage.getItem('materio_theme') as 'light' | 'dark';
-      if (savedTheme) {
-        setTheme(savedTheme);
-        document.documentElement.setAttribute('data-theme', savedTheme);
+        const savedTheme = localStorage.getItem('materio_theme') as 'light' | 'dark';
+        if (savedTheme) {
+          setTheme(savedTheme);
+          document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+      } catch {
+        // Ignore unavailable or malformed local storage data.
       }
-    } catch {
-      // ignore
-    }
+    };
+
+    const timeoutId = window.setTimeout(loadSavedState, 0);
+    return () => window.clearTimeout(timeoutId);
   }, []);
 
   // Save changes
@@ -140,7 +145,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       name,
       slug: name.toLowerCase().replace(/\s+/g, '-'),
       description: description || 'Workspace tim kolaboratif baru',
-      avatar: avatar || '⚡',
+      avatar: avatar || 'WB',
       members: initialMembers,
       defaultRepo: defaultRepo || `workbranch-hq/${name.toLowerCase().replace(/\s+/g, '-')}`,
       createdAt: new Date().toISOString().split('T')[0],

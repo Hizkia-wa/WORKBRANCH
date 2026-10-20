@@ -1,19 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --primary: #8c57ff;
-  --primary-hover: #7e4ee6;
-  --primary-light: rgba(140, 87, 255, 0.12);
-  --primary-glow: rgba(140, 87, 255, 0.25);
-  --primary-gradient: linear-gradient(135deg, #8c57ff 0%, #a272ff 100%);
-  --pro-gradient: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+  --primary: #0b5cab;
+  --primary-hover: #084b89;
+  --primary-light: rgba(11, 92, 171, 0.12);
+  --primary-glow: rgba(11, 92, 171, 0.22);
+  --primary-gradient: linear-gradient(135deg, #0b5cab 0%, #18b879 100%);
+  --pro-gradient: linear-gradient(135deg, #0b3b82 0%, #18a878 100%);
 
-  --success: #56ca00;
-  --success-light: rgba(86, 202, 0, 0.12);
+  --success: #159957;
+  --success-light: rgba(21, 153, 87, 0.12);
   --warning: #ffb400;
   --warning-light: rgba(255, 180, 0, 0.12);
-  --info: #16b1ff;
-  --info-light: rgba(22, 177, 255, 0.12);
+  --info: #0b75b8;
+  --info-light: rgba(11, 117, 184, 0.12);
   --danger: #ff4c51;
   --danger-light: rgba(255, 76, 81, 0.12);
 
@@ -36,7 +36,7 @@
   --shadow-sm: 0 2px 6px rgba(58, 53, 65, 0.04);
   --shadow-card: 0 4px 18px 0 rgba(58, 53, 65, 0.06);
   --shadow-lg: 0 8px 30px rgba(58, 53, 65, 0.12);
-  --shadow-glow: 0 6px 20px rgba(140, 87, 255, 0.35);
+  --shadow-glow: 0 6px 20px rgba(11, 92, 171, 0.28);
 
   --radius-xs: 6px;
   --radius-sm: 8px;
@@ -106,7 +106,7 @@ button, input, select, textarea {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(140, 87, 255, 0.2);
+  background: rgba(11, 92, 171, 0.2);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -252,7 +252,7 @@ button, input, select, textarea {
 }
 
 .btn-secondary:hover {
-  background: rgba(140, 87, 255, 0.18);
+  background: rgba(11, 92, 171, 0.18);
 }
 
 .btn-outline {

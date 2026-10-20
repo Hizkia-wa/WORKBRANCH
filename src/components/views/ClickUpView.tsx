@@ -42,7 +42,7 @@ export default function ClickUpView() {
 
   const columns: { id: ClickUpStatus; label: string; color: string; bg: string }[] = [
     { id: 'todo', label: 'Belum Dikerjakan', color: '#ffb400', bg: 'rgba(255, 180, 0, 0.12)' },
-    { id: 'in_progress', label: 'Sedang Dikerjakan', color: '#8c57ff', bg: 'rgba(140, 87, 255, 0.12)' },
+    { id: 'in_progress', label: 'Sedang Dikerjakan', color: '#0b5cab', bg: 'rgba(11, 92, 171, 0.12)' },
     { id: 'review', label: 'Dalam Peninjauan', color: '#16b1ff', bg: 'rgba(22, 177, 255, 0.12)' },
     { id: 'done', label: 'Selesai', color: '#56ca00', bg: 'rgba(86, 202, 0, 0.12)' },
   ];

@@ -9,12 +9,12 @@ export default function CreateTeamModal() {
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [avatar, setAvatar] = useState('⚡');
+  const [avatar, setAvatar] = useState('WB');
   const [defaultRepo, setDefaultRepo] = useState('');
 
   if (!isCreateTeamModalOpen) return null;
 
-  const emojiList = ['⚡', '🚀', '🔥', '💻', '🛡️', '🎯', '✨', '💎', '⚙️', '🤖'];
+  const avatarList = ['WB', 'AP', 'CD', 'QA', 'UX', 'PM', 'FE', 'BE', 'OP', 'IT'];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,7 +90,7 @@ export default function CreateTeamModal() {
           <div className="form-group">
             <label className="form-label">Ikon Lencana Tim</label>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '6px' }}>
-              {emojiList.map((em) => (
+              {avatarList.map((em) => (
                 <button
                   key={em}
                   type="button"

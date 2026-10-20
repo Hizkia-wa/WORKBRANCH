@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
+import Image from 'next/image';
 import {
   Layers,
   CheckSquare,
@@ -55,29 +56,20 @@ export default function LandingPage() {
       >
         {/* Brand Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div
+          <Image
+            src="/workbranch-logo.png"
+            alt="WorkBranch"
+            width={230}
+            height={64}
+            priority
             style={{
-              width: '38px',
-              height: '38px',
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, #8c57ff 0%, #6830d9 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 14px rgba(140, 87, 255, 0.4)',
-              color: '#ffffff',
+              width: '230px',
+              height: '64px',
+              objectFit: 'contain',
+              objectPosition: 'left center',
+              display: 'block',
             }}
-          >
-            <Layers size={22} />
-          </div>
-          <div>
-            <span style={{ fontSize: '1.3rem', fontWeight: 800, letterSpacing: '0.5px', color: 'var(--text-heading)' }}>
-              WORKBRANCH
-            </span>
-            <span style={{ fontSize: '0.7rem', marginLeft: '6px', fontWeight: 700, color: 'var(--primary)', letterSpacing: '0.8px' }}>
-              COLLAB SUITE
-            </span>
-          </div>
+          />
         </div>
 
         {/* Center Nav Links */}
@@ -143,7 +135,7 @@ export default function LandingPage() {
               textDecoration: 'none',
             }}
           >
-            <span>Get Started. It's FREE</span>
+            <span>Get Started. It&apos;s FREE</span>
             <ArrowRight size={16} />
           </Link>
         </div>
@@ -174,7 +166,7 @@ export default function LandingPage() {
             fontSize: '0.8125rem',
             fontWeight: 700,
             marginBottom: '24px',
-            boxShadow: '0 2px 8px rgba(140, 87, 255, 0.15)',
+            boxShadow: '0 2px 8px rgba(11, 92, 171, 0.15)',
           }}
         >
           <Sparkles size={16} />
@@ -196,7 +188,7 @@ export default function LandingPage() {
           The project management tool <br />
           <span
             style={{
-              background: 'linear-gradient(135deg, #8c57ff 0%, #ec4899 100%)',
+              background: 'linear-gradient(135deg, #0b3b82 0%, #18b879 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}
@@ -242,7 +234,7 @@ export default function LandingPage() {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 12px 28px rgba(140, 87, 255, 0.4)';
+              e.currentTarget.style.boxShadow = '0 12px 28px rgba(11, 92, 171, 0.3)';
               e.currentTarget.style.background = 'var(--primary)';
             }}
             onMouseLeave={(e) => {
@@ -251,7 +243,7 @@ export default function LandingPage() {
               e.currentTarget.style.background = '#24292e';
             }}
           >
-            <span>Get Started. It's FREE</span>
+            <span>Get Started. It&apos;s FREE</span>
             <ArrowRight size={18} />
           </Link>
 
@@ -303,7 +295,7 @@ export default function LandingPage() {
             padding: '0',
             overflow: 'hidden',
             borderRadius: '20px',
-            boxShadow: '0 20px 60px rgba(140, 87, 255, 0.12), 0 8px 24px rgba(0,0,0,0.06)',
+            boxShadow: '0 20px 60px rgba(11, 92, 171, 0.12), 0 8px 24px rgba(0,0,0,0.06)',
             border: '1px solid var(--border-color)',
           }}
         >
@@ -443,7 +435,7 @@ export default function LandingPage() {
                 </div>
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <div style={{ fontSize: '0.85rem' }}><strong>John Doe (Lead Dev):</strong> Halo tim! Seluruh alur TaskFlow dan CodeHub sekarang sudah sinkron di dashboard ini 🚀</div>
+                    <div style={{ fontSize: '0.85rem' }}><strong>John Doe (Lead Dev):</strong> Halo tim! Seluruh alur TaskFlow dan CodeHub sekarang sudah sinkron di dashboard ini.</div>
                     <div style={{ fontSize: '0.85rem' }}><strong>Sarah Connor (Frontend):</strong> Mantap! Saat buat task baru, jangan lupa pilih tujuan: TaskFlow atau CodeHub ya! 👍</div>
                   </div>
                   <div style={{ padding: '8px 12px', background: 'var(--bg-input)', borderRadius: '8px', fontSize: '0.8rem', color: 'var(--text-light)' }}>
@@ -456,8 +448,8 @@ export default function LandingPage() {
             {activeTabPreview === 'dashboard' && (
               <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 2fr', gap: '18px' }}>
                 <div className="materio-card" style={{ padding: '18px', background: 'var(--primary-light)' }}>
-                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--primary)' }}>Selamat John! 🎉</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Target penyelesaian sprint 92.4% tercapai 🏆</div>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--primary)' }}>Selamat John</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Target penyelesaian sprint 92.4% tercapai</div>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
                   <div className="materio-card" style={{ padding: '12px', textAlign: 'center' }}>
@@ -638,8 +630,8 @@ export default function LandingPage() {
           style={{
             marginTop: '36px',
             padding: '32px',
-            background: 'linear-gradient(135deg, rgba(140, 87, 255, 0.08) 0%, rgba(162, 114, 255, 0.04) 100%)',
-            border: '2px solid rgba(140, 87, 255, 0.25)',
+            background: 'linear-gradient(135deg, rgba(11, 92, 171, 0.08) 0%, rgba(24, 184, 121, 0.05) 100%)',
+            border: '2px solid rgba(11, 92, 171, 0.2)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -708,11 +700,11 @@ export default function LandingPage() {
       <section style={{ padding: '80px 24px', maxWidth: '1100px', margin: '0 auto', textAlign: 'center', width: '100%' }}>
         <div
           style={{
-            background: 'linear-gradient(135deg, #8c57ff 0%, #6830d9 100%)',
+            background: 'linear-gradient(135deg, #0b3b82 0%, #0b75b8 100%)',
             color: '#ffffff',
             borderRadius: '24px',
             padding: '60px 32px',
-            boxShadow: '0 16px 40px rgba(140, 87, 255, 0.35)',
+            boxShadow: '0 16px 40px rgba(11, 92, 171, 0.28)',
             position: 'relative',
             overflow: 'hidden',
           }}
@@ -745,7 +737,7 @@ export default function LandingPage() {
             onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.04)')}
             onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
           >
-            Get Started. It's FREE
+            Get Started. It&apos;s FREE
           </Link>
 
           <div style={{ marginTop: '16px', fontSize: '0.8rem', opacity: 0.8 }}>

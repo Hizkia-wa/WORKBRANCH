@@ -3,6 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
+import Image from 'next/image';
 import {
   LayoutDashboard,
   CheckSquare,
@@ -13,7 +14,6 @@ import {
   Sparkles,
   ChevronRight,
   ChevronDown,
-  Layers,
   FolderGit2,
   Globe,
 } from 'lucide-react';
@@ -81,39 +81,21 @@ export default function Sidebar() {
           justifyContent: 'space-between',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          {/* Materio Icon */}
-          <div
+        <div style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
+          <Image
+            src="/workbranch-logo.png"
+            alt="WorkBranch"
+            width={190}
+            height={70}
+            priority
             style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, #8c57ff 0%, #6830d9 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(140, 87, 255, 0.4)',
-              color: '#ffffff',
+              width: '190px',
+              height: '70px',
+              objectFit: 'contain',
+              objectPosition: 'left center',
+              display: 'block',
             }}
-          >
-            <Layers size={20} />
-          </div>
-          <div>
-            <div
-              style={{
-                fontSize: '1.25rem',
-                fontWeight: '800',
-                letterSpacing: '0.5px',
-                color: 'var(--text-heading)',
-                lineHeight: 1.1,
-              }}
-            >
-              WORKBRANCH
-            </div>
-            <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.5px' }}>
-              DEV & COLLAB SUITE
-            </div>
-          </div>
+          />
         </div>
       </div>
 
@@ -251,10 +233,10 @@ export default function Sidebar() {
                   width: '100%',
                   textAlign: 'left',
                   background: isActive
-                    ? 'linear-gradient(135deg, #8c57ff 0%, #7e4ee6 100%)'
+                    ? 'linear-gradient(135deg, #0b3b82 0%, #0b75b8 100%)'
                     : 'transparent',
                   color: isActive ? '#ffffff' : 'var(--text-main)',
-                  boxShadow: isActive ? '0 4px 16px rgba(140, 87, 255, 0.35)' : 'none',
+                  boxShadow: isActive ? '0 4px 16px rgba(11, 92, 171, 0.28)' : 'none',
                   transition: 'all 0.2s ease',
                   fontWeight: isActive ? 600 : 500,
                 }}
@@ -393,7 +375,7 @@ export default function Sidebar() {
       <div style={{ padding: '16px' }}>
         <div
           style={{
-            background: 'linear-gradient(135deg, #a855f7 0%, #ec4899 100%)',
+            background: 'linear-gradient(135deg, #0b3b82 0%, #18b879 100%)',
             borderRadius: '12px',
             padding: '14px 16px',
             color: '#ffffff',

@@ -47,7 +47,7 @@ export default function ChatView() {
     setInputContent('');
   };
 
-  const quickEmojis = ['🚀', '🔥', '👍', '🎉', '⚡', '❤️'];
+  const quickEmojis = ['OK', 'ACK', 'FYI', 'LGTM', '+1', 'DONE'];
 
   return (
     <div

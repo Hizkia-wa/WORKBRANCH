@@ -411,7 +411,7 @@ export default function DashboardView() {
                       ? 'var(--primary)'
                       : 'var(--bg-input)',
                     boxShadow: bar.active
-                      ? '0 4px 12px rgba(140, 87, 255, 0.4)'
+                      ? '0 4px 12px rgba(11, 92, 171, 0.28)'
                       : 'none',
                     transition: 'all 0.3s ease',
                   }}
@@ -652,7 +652,7 @@ export default function DashboardView() {
               <path
                 d="M 0,25 Q 25,5 50,20 T 100,5"
                 fill="none"
-                stroke="#8c57ff"
+                stroke="var(--primary)"
                 strokeWidth="3"
                 strokeLinecap="round"
               />
@@ -757,10 +757,10 @@ export default function DashboardView() {
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: '4px', height: '26px' }}>
               {[
                 { h: 40, c: '#ff4c51' },
-                { h: 70, c: '#8c57ff' },
+                { h: 70, c: '#0b5cab' },
                 { h: 50, c: '#ffb400' },
                 { h: 85, c: '#56ca00' },
-                { h: 100, c: '#8c57ff' },
+                { h: 100, c: '#18b879' },
               ].map((b, i) => (
                 <div
                   key={i}
