@@ -20,6 +20,14 @@ import {
   initialChannels,
   initialMessages,
 } from '@/data/mockData';
+import {
+  getClickUpTasks,
+  getGitHubTasks,
+  getTeams,
+  readTheme,
+  writeStored,
+  writeTheme,
+} from '@/lib/data/storage';
 
 interface AppContextType {
   teams: Team[];
@@ -77,48 +85,39 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Load from localStorage if present
   useEffect(() => {
-    const loadSavedState = () => {
+    const loadSavedState = async () => {
       try {
-        const savedTeams = localStorage.getItem('materio_teams');
-        if (savedTeams) setTeams(JSON.parse(savedTeams));
-
-        const savedCUTasks = localStorage.getItem('materio_cu_tasks');
-        if (savedCUTasks) setClickUpTasks(JSON.parse(savedCUTasks));
-
-        const savedGHTasks = localStorage.getItem('materio_gh_tasks');
-        if (savedGHTasks) setGitHubTasks(JSON.parse(savedGHTasks));
-
-        const savedTheme = localStorage.getItem('materio_theme') as 'light' | 'dark';
-        if (savedTheme) {
-          setTheme(savedTheme);
-          document.documentElement.setAttribute('data-theme', savedTheme);
-        }
+        const [savedTeams, savedCUTasks, savedGHTasks] = await Promise.all([
+          getTeams(),
+          getClickUpTasks(),
+          getGitHubTasks(),
+        ]);
+        setTeams(savedTeams);
+        setClickUpTasks(savedCUTasks);
+        setGitHubTasks(savedGHTasks);
+        const savedTheme = readTheme();
+        setTheme(savedTheme);
+        document.documentElement.setAttribute('data-theme', savedTheme);
       } catch {
         // Ignore unavailable or malformed local storage data.
       }
     };
 
-    const timeoutId = window.setTimeout(loadSavedState, 0);
+    const timeoutId = window.setTimeout(() => void loadSavedState(), 0);
     return () => window.clearTimeout(timeoutId);
   }, []);
 
   // Save changes
   useEffect(() => {
-    try {
-      localStorage.setItem('materio_teams', JSON.stringify(teams));
-    } catch {}
+    writeStored('teams', teams);
   }, [teams]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem('materio_cu_tasks', JSON.stringify(clickUpTasks));
-    } catch {}
+    writeStored('clickUpTasks', clickUpTasks);
   }, [clickUpTasks]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem('materio_gh_tasks', JSON.stringify(gitHubTasks));
-    } catch {}
+    writeStored('gitHubTasks', gitHubTasks);
   }, [gitHubTasks]);
 
   const currentTeam = teams.find((t) => t.id === currentTeamId) || teams[0];
@@ -134,9 +133,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const next = theme === 'light' ? 'dark' : 'light';
     setTheme(next);
     document.documentElement.setAttribute('data-theme', next);
-    try {
-      localStorage.setItem('materio_theme', next);
-    } catch {}
+    writeTheme(next);
   };
 
   const createTeam = (name: string, description: string, avatar: string, defaultRepo: string): Team => {
