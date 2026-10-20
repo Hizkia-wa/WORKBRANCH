@@ -85,3 +85,46 @@ export interface ChatMessage {
 }
 
 export type ActiveView = 'dashboard' | 'clickup' | 'github' | 'chat' | 'team';
+
+export type ProjectStatus = 'planning' | 'active' | 'completed';
+export type FileKind = 'docx' | 'xlsx' | 'pptx' | 'pdf' | 'image' | 'video' | 'code';
+
+export interface Project {
+  id: string;
+  name: string;
+  description: string;
+  status: ProjectStatus;
+  progress: number;
+  ownerId: string;
+  memberIds: string[];
+  updatedAt: string;
+}
+
+export interface WorkspaceFile {
+  id: string;
+  projectId: string;
+  name: string;
+  path: string;
+  kind: FileKind;
+  size: string;
+  updatedAt: string;
+  lockedBy?: string;
+  linkedTaskIds: string[];
+}
+
+export interface Activity {
+  id: string;
+  projectId: string;
+  actorId: string;
+  action: string;
+  target: string;
+  createdAt: string;
+}
+
+export interface TaskComment {
+  id: string;
+  taskId: string;
+  authorId: string;
+  content: string;
+  createdAt: string;
+}
