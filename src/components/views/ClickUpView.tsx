@@ -1,23 +1,64 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useApp } from '@/context/AppContext';
+import Image from 'next/image';
+import { useMemo, useState } from 'react';
 import {
+  CalendarDays,
+  Check,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Filter,
   Kanban,
   List,
+  MoreHorizontal,
   Plus,
-  Calendar,
-  AlertCircle,
-  Clock,
-  CheckCircle,
-  MoreVertical,
+  Search,
   Trash2,
-  ChevronRight,
-  ChevronLeft,
-  Filter,
 } from 'lucide-react';
-import Image from 'next/image';
-import { ClickUpStatus, ClickUpPriority, ClickUpTask } from '@/types';
+import { useApp } from '@/context/AppContext';
+import { ClickUpPriority, ClickUpStatus } from '@/types';
+
+type ViewMode = 'board' | 'list';
+type PriorityFilter = 'all' | ClickUpPriority;
+
+const columns: {
+  id: ClickUpStatus;
+  label: string;
+  description: string;
+  color: string;
+}[] = [
+  { id: 'todo', label: 'To Do', description: 'Belum dikerjakan', color: '#0b75b8' },
+  { id: 'in_progress', label: 'In Progress', description: 'Sedang dikerjakan', color: '#0b5cab' },
+  { id: 'review', label: 'Review', description: 'Menunggu peninjauan', color: '#159957' },
+  { id: 'done', label: 'Done', description: 'Selesai', color: '#087f5b' },
+];
+
+const priorityLabels: Record<PriorityFilter, string> = {
+  all: 'Semua',
+  urgent: 'Urgent',
+  high: 'High',
+  medium: 'Medium',
+  low: 'Low',
+};
+
+function getNextStatus(status: ClickUpStatus): ClickUpStatus | null {
+  if (status === 'todo') return 'in_progress';
+  if (status === 'in_progress') return 'review';
+  if (status === 'review') return 'done';
+  return null;
+}
+
+function getPreviousStatus(status: ClickUpStatus): ClickUpStatus | null {
+  if (status === 'done') return 'review';
+  if (status === 'review') return 'in_progress';
+  if (status === 'in_progress') return 'todo';
+  return null;
+}
+
+function getPriorityClass(priority: ClickUpPriority): string {
+  return `task-priority task-priority-${priority}`;
+}
 
 export default function ClickUpView() {
   const {
@@ -25,530 +66,249 @@ export default function ClickUpView() {
     updateClickUpStatus,
     deleteTask,
     setIsCreateTaskModalOpen,
+    showNotification,
     searchQuery,
   } = useApp();
+  const [viewMode, setViewMode] = useState<ViewMode>('board');
+  const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>('all');
+  const [localSearch, setLocalSearch] = useState('');
 
-  const [viewMode, setViewMode] = useState<'board' | 'list'>('board');
-  const [priorityFilter, setPriorityFilter] = useState<string>('all');
+  const filteredTasks = useMemo(() => {
+    const query = `${searchQuery} ${localSearch}`.trim().toLowerCase();
+    return clickUpTasks.filter((task) => {
+      const matchesSearch =
+        !query ||
+        task.title.toLowerCase().includes(query) ||
+        task.description.toLowerCase().includes(query) ||
+        task.tags.some((tag) => tag.toLowerCase().includes(query));
+      const matchesPriority = priorityFilter === 'all' || task.priority === priorityFilter;
+      return matchesSearch && matchesPriority;
+    });
+  }, [clickUpTasks, localSearch, priorityFilter, searchQuery]);
 
-  const filteredTasks = clickUpTasks.filter((task) => {
-    const matchesSearch =
-      task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      task.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesPriority =
-      priorityFilter === 'all' || task.priority === priorityFilter;
-    return matchesSearch && matchesPriority;
-  });
-
-  const columns: { id: ClickUpStatus; label: string; color: string; bg: string }[] = [
-    { id: 'todo', label: 'Belum Dikerjakan', color: '#ffb400', bg: 'rgba(255, 180, 0, 0.12)' },
-    { id: 'in_progress', label: 'Sedang Dikerjakan', color: '#0b5cab', bg: 'rgba(11, 92, 171, 0.12)' },
-    { id: 'review', label: 'Dalam Peninjauan', color: '#16b1ff', bg: 'rgba(22, 177, 255, 0.12)' },
-    { id: 'done', label: 'Selesai', color: '#56ca00', bg: 'rgba(86, 202, 0, 0.12)' },
-  ];
-
-  const getPriorityBadge = (p: ClickUpPriority) => {
-    switch (p) {
-      case 'urgent':
-        return <span className="badge badge-danger">MENDESAK</span>;
-      case 'high':
-        return <span className="badge badge-warning">TINGGI</span>;
-      case 'medium':
-        return <span className="badge badge-purple">SEDANG</span>;
-      case 'low':
-        return <span className="badge" style={{ background: 'var(--bg-input)', color: 'var(--text-muted)' }}>RENDAH</span>;
+  const handleDelete = (taskId: string, title: string) => {
+    if (window.confirm(`Hapus tugas "${title}"?`)) {
+      deleteTask(taskId, 'clickup');
     }
   };
 
-  const getNextStatus = (current: ClickUpStatus): ClickUpStatus | null => {
-    if (current === 'todo') return 'in_progress';
-    if (current === 'in_progress') return 'review';
-    if (current === 'review') return 'done';
-    return null;
+  const moveTask = (taskId: string, status: ClickUpStatus | null) => {
+    if (status) updateClickUpStatus(taskId, status);
   };
 
-  const getPrevStatus = (current: ClickUpStatus): ClickUpStatus | null => {
-    if (current === 'done') return 'review';
-    if (current === 'review') return 'in_progress';
-    if (current === 'in_progress') return 'todo';
-    return null;
+  const renderPriority = (priority: ClickUpPriority) => (
+    <span className={getPriorityClass(priority)}>{priorityLabels[priority]}</span>
+  );
+
+  const renderTaskCard = (task: (typeof clickUpTasks)[number], color: string) => {
+    const nextStatus = getNextStatus(task.status);
+    const previousStatus = getPreviousStatus(task.status);
+    const checklistDone = task.checklist?.filter((item) => item.done).length ?? 0;
+    const checklistTotal = task.checklist?.length ?? 0;
+
+    return (
+      <article className="taskflow-card" key={task.id} style={{ '--task-accent': color } as React.CSSProperties}>
+        <div className="taskflow-card-top">
+          {renderPriority(task.priority)}
+          <div className="taskflow-card-menu">
+            <button
+              className="taskflow-icon-button"
+              title="Tindakan tugas"
+              onClick={() => showNotification(`Tindakan tersedia untuk "${task.title}".`)}
+            >
+              <MoreHorizontal size={16} />
+            </button>
+            <button
+              className="taskflow-icon-button taskflow-delete-button"
+              title="Hapus tugas"
+              onClick={() => handleDelete(task.id, task.title)}
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
+        </div>
+
+        <div className="taskflow-card-content">
+          <h3>{task.title}</h3>
+          <p>{task.description}</p>
+        </div>
+
+        <div className="taskflow-tags">
+          {task.tags.slice(0, 3).map((tag) => (
+            <span key={tag}>#{tag}</span>
+          ))}
+        </div>
+
+        <div className="taskflow-progress">
+          <div className="taskflow-progress-label">
+            <span>Progress</span>
+            <strong>{task.progress}%</strong>
+          </div>
+          <div className="taskflow-progress-track">
+            <span style={{ width: `${task.progress}%` }} />
+          </div>
+        </div>
+
+        {checklistTotal > 0 && (
+          <div className="taskflow-checklist">
+            <CheckCircle2 size={14} />
+            <span>{checklistDone}/{checklistTotal} checklist selesai</span>
+          </div>
+        )}
+
+        <div className="taskflow-card-footer">
+          <span className="taskflow-due-date">
+            <CalendarDays size={14} />
+            {task.dueDate}
+          </span>
+          <Image
+            src={task.assignee.avatar}
+            alt={task.assignee.name}
+            title={task.assignee.name}
+            width={30}
+            height={30}
+            unoptimized
+            className="taskflow-avatar"
+          />
+        </div>
+
+        <div className="taskflow-card-actions">
+          {previousStatus ? (
+            <button className="btn btn-outline btn-sm" onClick={() => moveTask(task.id, previousStatus)}>
+              <ChevronLeft size={14} />
+              Kembali
+            </button>
+          ) : (
+            <span />
+          )}
+          {nextStatus ? (
+            <button className="btn btn-primary btn-sm" onClick={() => moveTask(task.id, nextStatus)}>
+              Lanjut
+              <ChevronRight size={14} />
+            </button>
+          ) : (
+            <span className="taskflow-complete-label">
+              <Check size={14} />
+              Selesai
+            </span>
+          )}
+        </div>
+      </article>
+    );
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      {/* Header & Filter ClickUp */}
-      <div
-        className="materio-card"
-        style={{
-          padding: '18px 24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '16px',
-        }}
-      >
+    <div className="taskflow-page">
+      <section className="taskflow-heading">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span
-              style={{
-                width: '12px',
-                height: '12px',
-                borderRadius: '50%',
-                background: '#7b68ee',
-                boxShadow: '0 0 10px #7b68ee',
-              }}
-            />
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-heading)' }}>
-              TaskFlow &bull; Papan Manajemen Tugas
-            </h2>
+          <div className="taskflow-kicker">
+            <span />
+            Task Management
           </div>
-          <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-            Pelacak alur kerja sprint tim. Tugas yang dibuat untuk TaskFlow masuk ke tahapan Kanban ini.
-          </p>
+          <h1>TaskFlow <span>•</span> Papan Manajemen Tugas</h1>
+          <p>Atur prioritas, lacak progress, dan pindahkan pekerjaan tanpa kehilangan konteks.</p>
         </div>
+        <button className="btn btn-primary" onClick={() => setIsCreateTaskModalOpen(true)}>
+          <Plus size={17} />
+          New Task
+        </button>
+      </section>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          {/* Toggle Tampilan Papan / Tabel */}
-          <div
-            style={{
-              display: 'flex',
-              background: 'var(--bg-input)',
-              borderRadius: '8px',
-              padding: '3px',
-              border: '1px solid var(--border-color)',
-            }}
-          >
+      <section className="taskflow-toolbar">
+        <div className="taskflow-search">
+          <Search size={16} />
+          <input
+            value={localSearch}
+            onChange={(event) => setLocalSearch(event.target.value)}
+            placeholder="Cari task, tag, atau deskripsi..."
+            aria-label="Cari task"
+          />
+        </div>
+        <div className="taskflow-priority-filter">
+          <Filter size={15} />
+          <span>Prioritas:</span>
+          {(['all', 'urgent', 'high', 'medium', 'low'] as PriorityFilter[]).map((priority) => (
             <button
-              onClick={() => setViewMode('board')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                border: 'none',
-                background: viewMode === 'board' ? 'var(--bg-card)' : 'transparent',
-                color: viewMode === 'board' ? 'var(--primary)' : 'var(--text-muted)',
-                fontWeight: 600,
-                fontSize: '0.8rem',
-                cursor: 'pointer',
-                boxShadow: viewMode === 'board' ? 'var(--shadow-sm)' : 'none',
-              }}
+              key={priority}
+              className={priorityFilter === priority ? 'is-active' : ''}
+              onClick={() => setPriorityFilter(priority)}
             >
-              <Kanban size={15} />
-              <span>Papan Kanban</span>
+              {priorityLabels[priority]}
             </button>
-            <button
-              onClick={() => setViewMode('list')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                border: 'none',
-                background: viewMode === 'list' ? 'var(--bg-card)' : 'transparent',
-                color: viewMode === 'list' ? 'var(--primary)' : 'var(--text-muted)',
-                fontWeight: 600,
-                fontSize: '0.8rem',
-                cursor: 'pointer',
-                boxShadow: viewMode === 'list' ? 'var(--shadow-sm)' : 'none',
-              }}
-            >
-              <List size={15} />
-              <span>Tabel Rinci</span>
-            </button>
-          </div>
-
-          {/* Filter Prioritas */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Filter size={15} color="var(--text-muted)" />
-            <select
-              value={priorityFilter}
-              onChange={(e) => setPriorityFilter(e.target.value)}
-              className="form-select"
-              style={{ padding: '6px 10px', fontSize: '0.8rem', width: 'auto' }}
-            >
-              <option value="all">Semua Prioritas</option>
-              <option value="urgent">Mendesak (Urgent)</option>
-              <option value="high">Tinggi (High)</option>
-              <option value="medium">Sedang (Medium)</option>
-              <option value="low">Rendah (Low)</option>
-            </select>
-          </div>
-
-          {/* Tombol Buat Tugas */}
-          <button
-            onClick={() => setIsCreateTaskModalOpen(true)}
-            className="btn btn-primary btn-sm"
-            style={{ gap: '6px' }}
-          >
-            <Plus size={16} />
-            <span>Buat Tugas</span>
+          ))}
+        </div>
+        <div className="taskflow-view-toggle" role="group" aria-label="Tampilan task">
+          <button className={viewMode === 'board' ? 'is-active' : ''} onClick={() => setViewMode('board')}>
+            <Kanban size={15} />
+            Kanban
+          </button>
+          <button className={viewMode === 'list' ? 'is-active' : ''} onClick={() => setViewMode('list')}>
+            <List size={15} />
+            List
           </button>
         </div>
-      </div>
+      </section>
 
-      {/* TAMPILAN PAPAN KANBAN */}
       {viewMode === 'board' ? (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, minmax(260px, 1fr))',
-            gap: '18px',
-            alignItems: 'start',
-          }}
-        >
-          {columns.map((col) => {
-            const colTasks = filteredTasks.filter((t) => t.status === col.id);
-
+        <section className="taskflow-board">
+          {columns.map((column) => {
+            const tasks = filteredTasks.filter((task) => task.status === column.id);
             return (
-              <div
-                key={col.id}
-                style={{
-                  background: 'var(--bg-input)',
-                  borderRadius: '14px',
-                  padding: '14px',
-                  minHeight: '480px',
-                  border: '1px solid var(--border-color)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px',
-                }}
-              >
-                {/* Header Kolom */}
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    paddingBottom: '8px',
-                    borderBottom: '2px solid var(--border-color)',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span
-                      style={{
-                        width: '10px',
-                        height: '10px',
-                        borderRadius: '50%',
-                        background: col.color,
-                      }}
-                    />
-                    <span
-                      style={{
-                        fontWeight: 700,
-                        fontSize: '0.9rem',
-                        color: 'var(--text-heading)',
-                      }}
-                    >
-                      {col.label}
-                    </span>
+              <div className="taskflow-column" key={column.id}>
+                <header className="taskflow-column-header">
+                  <div>
+                    <div className="taskflow-column-title">
+                      <span style={{ background: column.color }} />
+                      <h2>{column.label}</h2>
+                    </div>
+                    <p>{column.description}</p>
                   </div>
-                  <span
-                    className="badge"
-                    style={{
-                      background: col.bg,
-                      color: col.color,
-                      fontSize: '0.72rem',
-                    }}
-                  >
-                    {colTasks.length}
-                  </span>
-                </div>
-
-                {/* Kartu Kolom */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
-                  {colTasks.map((task) => (
-                    <div
-                      key={task.id}
-                      className="materio-card"
-                      style={{
-                        padding: '14px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '10px',
-                        boxShadow: 'var(--shadow-sm)',
-                        borderLeft: `4px solid ${col.color}`,
-                      }}
-                    >
-                      {/* Prioritas & Hapus */}
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        {getPriorityBadge(task.priority)}
-                        <button
-                          onClick={() => deleteTask(task.id, 'clickup')}
-                          className="btn-icon"
-                          style={{ width: '24px', height: '24px', color: 'var(--text-light)' }}
-                          title="Hapus Tugas"
-                        >
-                          <Trash2 size={13} />
-                        </button>
-                      </div>
-
-                      {/* Judul & Deskripsi */}
-                      <div>
-                        <h4
-                          style={{
-                            fontSize: '0.9rem',
-                            fontWeight: 700,
-                            color: 'var(--text-heading)',
-                            lineHeight: 1.3,
-                          }}
-                        >
-                          {task.title}
-                        </h4>
-                        <p
-                          style={{
-                            fontSize: '0.785rem',
-                            color: 'var(--text-muted)',
-                            marginTop: '4px',
-                            lineHeight: 1.4,
-                          }}
-                        >
-                          {task.description}
-                        </p>
-                      </div>
-
-                      {/* Tag Kategori */}
-                      {task.tags && task.tags.length > 0 && (
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                          {task.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              style={{
-                                fontSize: '0.68rem',
-                                padding: '2px 8px',
-                                background: 'var(--bg-input)',
-                                borderRadius: '4px',
-                                color: 'var(--text-muted)',
-                                fontWeight: 500,
-                              }}
-                            >
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Bar Progres */}
-                      <div>
-                        <div
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            fontSize: '0.7rem',
-                            color: 'var(--text-muted)',
-                            marginBottom: '4px',
-                          }}
-                        >
-                          <span>Progres Tugas</span>
-                          <span>{task.progress}%</span>
-                        </div>
-                        <div
-                          style={{
-                            width: '100%',
-                            height: '5px',
-                            background: 'var(--bg-input)',
-                            borderRadius: '3px',
-                            overflow: 'hidden',
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: `${task.progress}%`,
-                              height: '100%',
-                              background: col.color,
-                              borderRadius: '3px',
-                            }}
-                          />
-                        </div>
-                      </div>
-
-                      {/* Footer: Tenggat Waktu & Penanggung Jawab */}
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          paddingTop: '8px',
-                          borderTop: '1px solid var(--border-color)',
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '5px',
-                            fontSize: '0.72rem',
-                            color: 'var(--text-muted)',
-                          }}
-                        >
-                          <Calendar size={13} />
-                          <span>{task.dueDate}</span>
-                        </div>
-
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <Image
-                            src={task.assignee.avatar}
-                            alt={task.assignee.name}
-                            width={24}
-                            height={24}
-                            unoptimized
-                            style={{ borderRadius: '50%' }}
-                            title={task.assignee.name}
-                          />
-                        </div>
-                      </div>
-
-                      {/* Tombol Geser Status Cepat */}
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          paddingTop: '6px',
-                        }}
-                      >
-                        {getPrevStatus(col.id) ? (
-                          <button
-                            onClick={() => updateClickUpStatus(task.id, getPrevStatus(col.id)!)}
-                            className="btn btn-outline btn-sm"
-                            style={{ padding: '3px 8px', fontSize: '0.7rem', gap: '3px' }}
-                          >
-                            <ChevronLeft size={12} />
-                            <span>Kembali</span>
-                          </button>
-                        ) : <span />}
-
-                        {getNextStatus(col.id) ? (
-                          <button
-                            onClick={() => updateClickUpStatus(task.id, getNextStatus(col.id)!)}
-                            className="btn btn-primary btn-sm"
-                            style={{ padding: '3px 8px', fontSize: '0.7rem', gap: '3px' }}
-                          >
-                            <span>Lanjut</span>
-                            <ChevronRight size={12} />
-                          </button>
-                        ) : (
-                          <span
-                            style={{
-                              fontSize: '0.7rem',
-                              color: 'var(--success)',
-                              fontWeight: 700,
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '4px',
-                            }}
-                          >
-                            <CheckCircle size={12} /> Selesai
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-
-                  {colTasks.length === 0 && (
-                    <div
-                      style={{
-                        padding: '28px 12px',
-                        textAlign: 'center',
-                        color: 'var(--text-light)',
-                        fontSize: '0.8rem',
-                        border: '1px dashed var(--border-color)',
-                        borderRadius: '10px',
-                      }}
-                    >
-                      Belum ada tugas di kolom {col.label}
-                    </div>
-                  )}
+                  <span className="taskflow-count">{tasks.length}</span>
+                </header>
+                <div className="taskflow-column-body">
+                  {tasks.map((task) => renderTaskCard(task, column.color))}
+                  <button className="taskflow-add-card" onClick={() => setIsCreateTaskModalOpen(true)}>
+                    <Plus size={15} />
+                    Tambah task
+                  </button>
+                  {tasks.length === 0 && <div className="taskflow-empty">Belum ada task di kolom ini.</div>}
                 </div>
               </div>
             );
           })}
-        </div>
+        </section>
       ) : (
-        /* TAMPILAN TABEL DAFTAR TUGAS */
-        <div className="materio-card" style={{ padding: '0', overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid var(--border-color)', background: 'var(--bg-input)' }}>
-                <th style={{ padding: '14px 20px', fontSize: '0.785rem', color: 'var(--text-muted)' }}>JUDUL TUGAS</th>
-                <th style={{ padding: '14px 20px', fontSize: '0.785rem', color: 'var(--text-muted)' }}>PENANGGUNG JAWAB</th>
-                <th style={{ padding: '14px 20px', fontSize: '0.785rem', color: 'var(--text-muted)' }}>TENGGAT WAKTU</th>
-                <th style={{ padding: '14px 20px', fontSize: '0.785rem', color: 'var(--text-muted)' }}>PRIORITAS</th>
-                <th style={{ padding: '14px 20px', fontSize: '0.785rem', color: 'var(--text-muted)' }}>STATUS TUGAS</th>
-                <th style={{ padding: '14px 20px', fontSize: '0.785rem', color: 'var(--text-muted)' }}>AKSI</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredTasks.map((task) => (
-                <tr
-                  key={task.id}
-                  style={{
-                    borderBottom: '1px solid var(--border-color)',
-                    transition: 'background 0.15s',
-                  }}
-                >
-                  <td style={{ padding: '16px 20px' }}>
-                    <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-heading)' }}>
-                      {task.title}
-                    </div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                      {task.description.slice(0, 60)}...
-                    </div>
-                  </td>
-                  <td style={{ padding: '16px 20px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <Image
-                        src={task.assignee.avatar}
-                        alt={task.assignee.name}
-                        width={26}
-                        height={26}
-                        unoptimized
-                        style={{ borderRadius: '50%' }}
-                      />
-                      <span style={{ fontSize: '0.8125rem' }}>{task.assignee.name}</span>
-                    </div>
-                  </td>
-                  <td style={{ padding: '16px 20px', fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
-                    {task.dueDate}
-                  </td>
-                  <td style={{ padding: '16px 20px' }}>{getPriorityBadge(task.priority)}</td>
-                  <td style={{ padding: '16px 20px' }}>
-                    <select
-                      value={task.status}
-                      onChange={(e) => updateClickUpStatus(task.id, e.target.value as ClickUpStatus)}
-                      className="form-select"
-                      style={{ padding: '4px 8px', fontSize: '0.78rem', width: 'auto' }}
-                    >
-                      <option value="todo">Belum Dikerjakan (To Do)</option>
-                      <option value="in_progress">Sedang Dikerjakan (In Progress)</option>
-                      <option value="review">Dalam Peninjauan (Review)</option>
-                      <option value="done">Selesai (Completed)</option>
-                    </select>
-                  </td>
-                  <td style={{ padding: '16px 20px' }}>
-                    <button
-                      onClick={() => deleteTask(task.id, 'clickup')}
-                      className="btn-icon"
-                      style={{ color: 'var(--danger)' }}
-                      title="Hapus"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <section className="taskflow-list">
+          <div className="taskflow-list-header">
+            <span>Task</span>
+            <span>Assignee</span>
+            <span>Deadline</span>
+            <span>Priority</span>
+            <span>Status</span>
+            <span>Aksi</span>
+          </div>
+          {filteredTasks.map((task) => (
+            <div className="taskflow-list-row" key={task.id}>
+              <div>
+                <strong>{task.title}</strong>
+                <small>{task.description}</small>
+              </div>
+              <span className="taskflow-list-assignee">
+                <Image src={task.assignee.avatar} alt={task.assignee.name} width={26} height={26} unoptimized />
+                {task.assignee.name}
+              </span>
+              <span>{task.dueDate}</span>
+              <span>{renderPriority(task.priority)}</span>
+              <select value={task.status} onChange={(event) => updateClickUpStatus(task.id, event.target.value as ClickUpStatus)}>
+                {columns.map((column) => <option key={column.id} value={column.id}>{column.label}</option>)}
+              </select>
+              <button className="taskflow-icon-button taskflow-delete-button" onClick={() => handleDelete(task.id, task.title)} title="Hapus task">
+                <Trash2 size={15} />
+              </button>
+            </div>
+          ))}
+          {filteredTasks.length === 0 && <div className="taskflow-empty">Tidak ada task yang cocok dengan filter.</div>}
+        </section>
       )}
     </div>
   );
